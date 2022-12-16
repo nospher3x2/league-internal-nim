@@ -1,13 +1,36 @@
 
 
 const
-    GameTimeOffset* = 0x1
-    LocalPlayerOffset* = 0x314A404
-    
+    GameVersionOffset* = 0x315A3B0
+    GameTimeOffset* = 0x3143C44
+
+    LocalPlayerInstanceOffset* = 0x314A404
+    ObjectManagerInstanceOffset* = 0x18ADAD8
+
+    HudInstanceOffset* = 0x018ADAE0
     ChatInstanceOffset* = 0x314A404
+    ZoomInstanceOffset* = 0x3143104
+
+    TacticalMapInstanceOffset* = 0x3143C88
+    RendererInstanceOffset* = 0x31765C0
+    NetClientInstanceOffset* = 0x314FF34
+
+const
+    TacticalMapHudOffset* = 0x15C
+    TacticalMapPositionOffset* = 0x3C
+    TacticalMapSizeOffset* = 0x44
 
 const 
+    ObjectIndexOffset* = 0x8
+    ObjectNetworkIDOffset* = 0xB4
+    ObjectTeamOffset* = 0x34
+    ObjectPositionOffset* = 0x1DC
+    ObjectChampionNameOffset* = 0x2DB4
+    ObjectDirectionOffset* = 0x1C08
+    ObjectLevelOffset* = 0x35A4
     ObjectHealthOffset* = 0xE7C
+    ObjectMaxHealthOffset* = 0xE8C
+
 
 const 
     PrintChatFunction* = 0x613C20

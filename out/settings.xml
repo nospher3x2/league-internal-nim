@@ -3,11 +3,16 @@
   <LastUpdateCheck>2022-12-10T04:51:10.4498267-03:00</LastUpdateCheck>
   <Modules>
     <_x206A__x206F__x206B__x206A__x202B__x206E__x200C__x206F__x200F__x202A__x200B__x202E__x206E__x206E__x206B__x202C__x200F__x202D__x202B__x202B__x200F__x200B__x206D__x200F__x200C__x206F__x200F__x202D__x206F__x206A__x206F__x200E__x202C__x202C__x202B__x202A__x202C__x202B__x202A__x202A__x202E_>
-      <CallingConvention>StdCall</CallingConvention>
       <Enable>true</Enable>
-      <Export></Export>
+      <Export i:nil="true" />
       <Parameters i:nil="true" />
-      <Path>C:\Users\ryan\Documents\stamble-cheat\out\StumbleGuys.dll</Path>
+      <Path>C:\Users\ryan\Documents\stamble-cheat\out\LeagueInternal.dll</Path>
+    </_x206A__x206F__x206B__x206A__x202B__x206E__x200C__x206F__x200F__x202A__x200B__x202E__x206E__x206E__x206B__x202C__x200F__x202D__x202B__x202B__x200F__x200B__x206D__x200F__x200C__x206F__x200F__x202D__x206F__x206A__x206F__x200E__x202C__x202C__x202B__x202A__x202C__x202B__x202A__x202A__x202E_>
+    <_x206A__x206F__x206B__x206A__x202B__x206E__x200C__x206F__x200F__x202A__x200B__x202E__x206E__x206E__x206B__x202C__x200F__x202D__x202B__x202B__x200F__x200B__x206D__x200F__x200C__x206F__x200F__x202D__x206F__x206A__x206F__x200E__x202C__x202C__x202B__x202A__x202C__x202B__x202A__x202A__x202E_>
+      <Enable>false</Enable>
+      <Export i:nil="true" />
+      <Parameters i:nil="true" />
+      <Path>C:\Users\ryan\Documents\core-main\Release\TwoHundred.Core.dll</Path>
     </_x206A__x206F__x206B__x206A__x202B__x206E__x200C__x206F__x200F__x202A__x200B__x202E__x206E__x206E__x206B__x202C__x200F__x202D__x202B__x202B__x200F__x200B__x206D__x200F__x200C__x206F__x200F__x202D__x206F__x206A__x206F__x200E__x202C__x202C__x202B__x202A__x202C__x202B__x202A__x202A__x202E_>
   </Modules>
   <Options>

@@ -1,16 +1,8 @@
 {.passL: "-s -static-libgcc".}
 import winim/com
+import std/strformat
 import ./game/objects/GameObject
 import ./game/Game
-
-proc read*(address: ByteAddress, t: typedesc): t =
-  cast[ptr t](address)[]
-
-# type 
-#   GameObject* = ref object
-
-# proc getHealth(self: GameObject): float32 = 
-#   return read(cast[ByteAddress](self) + 0xE7C, float32)
 
 proc mainThread(hModule: HINSTANCE) =
 
@@ -20,27 +12,18 @@ proc mainThread(hModule: HINSTANCE) =
   echo "oiii"
 
   let addressBase = GetModuleHandleA(nil)
-
-  let game = Game()
-  game.init(addressBase)
+  Game.instance = Game()
+  Game.instance.init(addressBase)
   
+  let game = Game.instance
   let localPlayer = game.getLocalPlayer()
-  echo localPlayer.getHealth()
-
-  discard game.sendChat("oiii")
-  discard game.printChat("oi amigo", 0x2)
-
-  # let ChatInstance = read(GameModule + 0x314B094, ByteAddress)
-  # echo toHex(ChatInstance)
-
-  # let printChat = cast[PrintChat](GameModule + 0x613C20)
-  # discard printChat(ChatInstance, "oii", 0x1)
-
+  discard game.sendChat(fmt"minha vida: {localPlayer.getHealth()}/{localPlayer.getMaxHealth()}")
+  discard game.printChat(fmt"Game Version: {game.getVersion()}. Time: {game.getTime()}", 0x3)
 
 proc NimMain() {.cdecl, importc.}
 
 proc DllMain(hModule: HINSTANCE, reasonForCall: DWORD,
-    lpReserved: LPVOID): WINBOOL {.exportc, dynlib, stdcall.} =
+    lpReserved: LPVOID): WINBOOL {.exportc, dynlib, stdcall.} = 
   case reasonForCall:
     of DLL_PROCESS_ATTACH:
       NimMain()
