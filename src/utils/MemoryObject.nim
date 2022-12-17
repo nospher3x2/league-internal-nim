@@ -1,8 +1,11 @@
 type 
   MemoryObject* = ref object of RootObj
+    initialized: int32
+    address: ByteAddress
+    
+proc read[T](self: MemoryObject, address: ByteAddress): T =
+  if(self.initialized != 200): # HAHAHA NIM GAMB BECAUSE NOT POSSIBLE SET DEFAULT VALUE
+    self.address = cast[ptr ByteAddress](self)[]
+    self.initialized = 200
 
-proc read[T](address: ByteAddress): T =
-  cast[ptr T](address)[]
-
-method address(self: MemoryObject): ByteAddress {.base.} = 
-  read[ByteAddress](cast[ByteAddress](self))
+  return cast[ptr T](self.address + address)[]

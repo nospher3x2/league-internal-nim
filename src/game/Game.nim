@@ -33,8 +33,8 @@ proc init*(self: Game, baseAddress: ByteAddress): void =
 proc getVersion*(self: Game): cstring =
   self.version
 
-proc getTime*(self: Game): float64 =
-  cast[float64](self.address + Offsets.GameTimeOffset)
+proc getTime*(self: Game): cfloat =
+  cast[cfloat](self.address + 0x3143C44)
 
 proc getLocalPlayer*(self: Game): GameObject =
   self.localPlayer

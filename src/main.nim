@@ -17,9 +17,7 @@ proc mainThread(hModule: HINSTANCE) =
   
   let game = Game.instance
   let localPlayer = game.getLocalPlayer()
-  discard game.sendChat(fmt"minha vida: {localPlayer.getHealth()}/{localPlayer.getMaxHealth()}")
-  discard game.printChat(fmt"Game Version: {game.getVersion()}. Time: {game.getTime()}", 0x3)
-
+  echo localPlayer.getRecallState()
 proc NimMain() {.cdecl, importc.}
 
 proc DllMain(hModule: HINSTANCE, reasonForCall: DWORD,

@@ -2,7 +2,7 @@
 
 const
     GameVersionOffset* = 0x315A3B0
-    GameTimeOffset* = 0x3143C44
+    GameTimeOffset* = 0x03143c44
 
     LocalPlayerInstanceOffset* = 0x314A404
     ObjectManagerInstanceOffset* = 0x18ADAD8
@@ -24,12 +24,14 @@ const
     ObjectIndexOffset* = 0x8
     ObjectNetworkIDOffset* = 0xB4
     ObjectTeamOffset* = 0x34
+    ObjectVisibilityOffset* = 0x274
     ObjectPositionOffset* = 0x1DC
-    ObjectChampionNameOffset* = 0x2DB4
     ObjectDirectionOffset* = 0x1C08
     ObjectLevelOffset* = 0x35A4
     ObjectHealthOffset* = 0xE7C
-    ObjectMaxHealthOffset* = 0xE8C
+    ObjectMaxHealthOffset* = 0xE8C4
+    ObjectChampionNameOffset* = 0x2DB4
+    ObjectRecallStateOffset* = 0xD90
 
 
 const 

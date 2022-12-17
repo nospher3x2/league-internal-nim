@@ -9,19 +9,24 @@ type GameObjectTeam* = enum
 
 type 
   GameObject* = ref object of MemoryObject
-    vtable: ptr array[0..128, pointer]
 
 proc getIndex*(self: GameObject): int32 = 
-  read[int32](self.address() + ObjectIndexOffset)
+  read[int32](self, ObjectIndexOffset)
 
 proc getNetworkId*(self: GameObject): int32 = 
-  read[int32](self.address() + ObjectNetworkIDOffset)
+  read[int32](self, ObjectNetworkIDOffset)
 
 proc getTeam*(self: GameObject): GameObjectTeam =
-  read[GameObjectTeam](self.address() + ObjectTeamOffset)
+  read[GameObjectTeam](self, ObjectTeamOffset)
+
+proc getLevel*(self: GameObject): int32 = 
+  read[int32](self, ObjectLevelOffset)
 
 proc getHealth*(self: GameObject): float32 = 
-  read[float32](self.address() + ObjectHealthOffset)
+  read[float32](self, ObjectHealthOffset)
 
 proc getMaxHealth*(self: GameObject): float32 = 
-  read[float32](self.address() + ObjectMaxHealthOffset)
+  read[float32](self, ObjectMaxHealthOffset)
+
+proc getRecallState*(self: GameObject): int32 = 
+  read[int32](self, ObjectRecallStateOffset)
