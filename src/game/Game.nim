@@ -1,8 +1,8 @@
 import ./objects/GameObject
 import ./manager/HudZoomManager
 import ./manager/ChatHudManager
+import ./manager/NetClientManager
 import ./patchables/Offsets
-import strutils
 import winim
 
 type FloatingTextType* = enum
@@ -42,11 +42,9 @@ type FloatingTextType* = enum
   ScoreProject0
   ScoreProject1
   ShieldBonusDamage
-
 type
   cstringConstImpl {.importc:"const char*".} = cstring
   constChar* = distinct cstringConstImpl
-
 type FloatingTextGetType = proc(floatingTextTypeInstance: ByteAddress, textType: FloatingTextType): cint {.gcsafe, thiscall.}
 type FloatingTextAddInternalLine = proc(
   floatingTextInstance: ByteAddress, 
@@ -56,8 +54,7 @@ type FloatingTextAddInternalLine = proc(
   idk1: cfloat,
   idk2: cint,
   animationType: cint,
-  instance2: DWORD
-): void {.gcsafe, thiscall.}
+  instance2: DWORD): void {.gcsafe, thiscall.}
 
 type
   Game* = ref object
@@ -65,14 +62,15 @@ type
     patch: cstring
 
     localPlayer: GameObject
+
     chatManager: ChatHudManager
     zoomManager: HudZoomManager
+    netClientManager: NetClientManager
 
     floatingTextEnumInstance: ByteAddress
     floatingTextManagerInstance: ByteAddress
 
     hudInstance: ByteAddress
-    zoomInstance: ByteAddress
 
     getFloatingTextType: FloatingTextGetType
     showFloatingTextFunction: FloatingTextAddInternalLine
@@ -84,21 +82,25 @@ proc init*(self: Game, baseAddress: ByteAddress): void =
   self.localPlayer = cast[GameObject](self.address + Offsets.LocalPlayerInstanceOffset)
 
   self.hudInstance = cast[ByteAddress](self.address + Offsets.HudInstanceOffset)
-  
-  self.floatingTextEnumInstance = cast[ptr ByteAddress](self.address + 0x24FB358)[]
-  self.floatingTextManagerInstance = cast[ptr ByteAddress](self.address + 0x24FB354)[]
+  self.floatingTextManagerInstance = cast[ptr ByteAddress](self.address + Offsets.FloatingTextManagerInstanceOffset)[]
+  self.floatingTextEnumInstance = cast[ptr ByteAddress](self.address + (Offsets.FloatingTextManagerInstanceOffset+4))[]
 
-  self.getFloatingTextType = cast[FloatingTextGetType](self.address + 0x5FBDD0)
-  self.showFloatingTextFunction = cast[FloatingTextAddInternalLine](self.address + 0x5F1E50)
+  self.getFloatingTextType = cast[FloatingTextGetType](self.address + Offsets.FloatingTextGetTypeOffset)
+  self.showFloatingTextFunction = cast[FloatingTextAddInternalLine](self.address + Offsets.FloatingTextAddInternalLineOffset)
 
   self.chatManager = ChatHudManager()
   self.zoomManager = HudZoomManager()
+  self.netClientManager = NetClientManager()
 
   self.chatManager.init(self.address)
   self.zoomManager.init(self.address)
+  self.netClientManager.init(self.address)
 
 proc getPatchVersion*(self: Game): cstring =
   self.patch
+
+proc getGameTime*(self: Game): cfloat = 
+  cast[ptr cfloat](self.address + Offsets.GameTimeOffset)[]
 
 proc getLocalPlayer*(self: Game): GameObject =
   self.localPlayer
@@ -106,17 +108,11 @@ proc getLocalPlayer*(self: Game): GameObject =
 proc getChatHudManager*(self: Game): ChatHudManager =
   self.chatManager
 
-proc chatIsOpen*(self: Game): bool =
-  self.chatManager.isOpen()
-
-proc sendMessageChat*(self: Game, message: string): void =
-  discard self.chatManager.sendMessage(message)
-
-proc printMessageChat*(self: Game, message: string, format: int = 0): void =
-  discard self.chatManager.printMessage(message, format)
-
 proc getHudZoomManager*(self: Game): HudZoomManager =
   self.zoomManager
+
+proc getNetClientManager*(self: Game): NetClientManager =
+  self.netClientManager
 
 proc showFloatingText*(self: Game, target: GameObject, text: cstring, textType: FloatingTextType, animationType: cint = 0): void = 
   let textTypePointer = self.getFloatingTextType(self.floatingTextEnumInstance, textType)

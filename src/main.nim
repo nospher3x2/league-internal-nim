@@ -5,27 +5,23 @@ import std/os
 import ./game/objects/GameObject
 import ./game/Game
 import ./game/manager/HudZoomManager
+import ./game/manager/NetClientManager
 
 proc mainThread(hModule: HINSTANCE) =
-
-  AllocConsole()
-  discard stdout.reopen("CONOUT$", fmWrite)
-
-  echo "oiii"
-
   let addressBase = GetModuleHandleA(nil)
   Game.instance = Game()
   Game.instance.init(addressBase)
   
   let game = Game.instance
+  
   let zoomManager = game.getHudZoomManager()
 
   zoomManager.patchCheatDetection()
-  if zoomManager.getCheatDetectionStatus():
-    zoomManager.changeZoomValue(900.0)
+  zoomManager.changeZoomValue(700.0)
   
   let localPlayer = game.getLocalPlayer()
-  game.showFloatingText(localPlayer, "CarryNim loaded", FloatingTextType.ScoreProject1, 0)
+  game.showFloatingText(localPlayer, "CarryNim loaded", FloatingTextType.ScoreProject1, 9)
+  echo game.getGameTime()
 
 proc NimMain() {.cdecl, importc.}
 

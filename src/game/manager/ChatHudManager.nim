@@ -1,6 +1,6 @@
 import ../patchables/Offsets
 
-type ChatMessageFunction = proc (ChatInstance: ByteAddress, text: cstring, format: int): int {.gcsafe, thiscall.}
+type ChatMessageFunction = proc (chatInstance: ByteAddress, text: cstring, format: int): int {.gcsafe, thiscall.}
 
 type
   ChatHudManager* = ref object
@@ -13,8 +13,8 @@ type
 proc init*(self: ChatHudManager, address: ByteAddress) =
   self.address = address
   self.chatInstance = cast[ByteAddress](self.address + Offsets.ChatInstanceOffset)
-  self.sendChatFunction = cast[ChatMessageFunction](self.address + Offsets.SendChatFunction)
-  self.printChatFunction = cast[ChatMessageFunction](self.address + Offsets.PrintChatFunction)
+  self.sendChatFunction = cast[ChatMessageFunction](self.address + Offsets.SendChatFunctionOffset)
+  self.printChatFunction = cast[ChatMessageFunction](self.address + Offsets.PrintChatFunctionOffset)
 
 proc isOpen*(self: ChatHudManager): bool =
   cast[bool](self.chatInstance + 0x6BC)

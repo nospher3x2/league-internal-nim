@@ -2,7 +2,7 @@
 
 const
     GameVersionOffset* = 0x315A3B0
-    GameTimeOffset* = 0x03143c44
+    GameTimeOffset* = 0x3143C44
 
     LocalPlayerInstanceOffset* = 0x314A404
     ObjectManagerInstanceOffset* = 0x18ADAD8
@@ -10,6 +10,8 @@ const
     HudInstanceOffset* = 0x018ADAE0
     ChatInstanceOffset* = 0x314A404
     ZoomInstanceOffset* = 0x3143104
+
+    FloatingTextManagerInstanceOffset* = 0x24FB354
 
     TacticalMapInstanceOffset* = 0x3143C88
     RendererInstanceOffset* = 0x31765C0
@@ -35,5 +37,8 @@ const
 
 
 const 
-    PrintChatFunction* = 0x613C20
-    SendChatFunction* = 0x661BF0
+    PrintChatFunctionOffset* = 0x613C20
+    SendChatFunctionOffset* = 0x661BF0
+    GetPingFunctionOffset* = 0x352780
+    FloatingTextGetTypeOffset* = 0x5FBDD0
+    FloatingTextAddInternalLineOffset* = 0x5F1E50
