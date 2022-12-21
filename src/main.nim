@@ -8,10 +8,10 @@ import ./game/manager/HudZoomManager
 
 proc mainThread(hModule: HINSTANCE) =
 
-  # AllocConsole()
-  # discard stdout.reopen("CONOUT$", fmWrite)
+  AllocConsole()
+  discard stdout.reopen("CONOUT$", fmWrite)
 
-  # echo "oiii"
+  echo "oiii"
 
   let addressBase = GetModuleHandleA(nil)
   Game.instance = Game()
@@ -19,9 +19,13 @@ proc mainThread(hModule: HINSTANCE) =
   
   let game = Game.instance
   let zoomManager = game.getHudZoomManager()
+
   zoomManager.patchCheatDetection()
-  zoomManager.changeMaxValue(2250.0)  
-  game.showFloatingText("CarryNim loaded", FloatingTextType.ScoreDarkStar, 0)
+  if zoomManager.getCheatDetectionStatus():
+    zoomManager.changeZoomValue(900.0)
+  
+  let localPlayer = game.getLocalPlayer()
+  game.showFloatingText(localPlayer, "CarryNim loaded", FloatingTextType.ScoreProject1, 0)
 
 proc NimMain() {.cdecl, importc.}
 

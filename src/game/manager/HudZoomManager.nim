@@ -1,4 +1,5 @@
 import ../patchables/Offsets
+import strutils
 
 type
   HudZoomManager* = ref object
@@ -8,6 +9,7 @@ type
 proc init*(self: HudZoomManager, address: ByteAddress) =
   self.address = address
   self.zoomInstance = cast[ptr ByteAddress](self.address + Offsets.ZoomInstanceOffset)[]
+  echo toHex(self.zoomInstance)
 
 proc getCheatDetectionStatus*(self: HudZoomManager): bool =
   cast[ptr bool](self.address + 0x315F904)[]
@@ -15,8 +17,8 @@ proc getCheatDetectionStatus*(self: HudZoomManager): bool =
 proc patchCheatDetection*(self: HudZoomManager): void =
   cast[ptr bool](self.address + 0x315F904)[] = true
 
-proc getMaxValue*(self: HudZoomManager): cfloat =
-  cast[cfloat](self.zoomInstance + 0x28)
+proc getZoomValue*(self: HudZoomManager): cfloat =
+  cast[cfloat](self.zoomInstance + 0x20)
 
-proc changeMaxValue*(self: HudZoomManager, zoom: cfloat): void =
-  cast[ptr cfloat](self.zoomInstance + 0x28)[] = zoom
+proc changeZoomValue*(self: HudZoomManager, zoom: cfloat): void =
+  cast[ptr cfloat](self.zoomInstance + 0x20)[] = zoom

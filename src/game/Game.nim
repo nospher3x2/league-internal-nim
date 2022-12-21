@@ -118,12 +118,12 @@ proc printMessageChat*(self: Game, message: string, format: int = 0): void =
 proc getHudZoomManager*(self: Game): HudZoomManager =
   self.zoomManager
 
-proc showFloatingText*(self: Game, text: cstring, textType: FloatingTextType, animationType: cint = 0): void = 
+proc showFloatingText*(self: Game, target: GameObject, text: cstring, textType: FloatingTextType, animationType: cint = 0): void = 
   let textTypePointer = self.getFloatingTextType(self.floatingTextEnumInstance, textType)
    
   self.showFloatingTextFunction(
       self.floatingTextManagerInstance, 
-      cast[ptr ByteAddress](self.localPlayer)[],
+      cast[ptr ByteAddress](target)[],
       textTypePointer,
       constChar(text),
       0.0,
