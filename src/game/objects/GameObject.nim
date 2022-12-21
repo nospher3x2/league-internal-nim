@@ -8,7 +8,7 @@ type GameObjectTeam* = enum
   Neutral = 300
 
 type 
-  GameObject* = ref object of MemoryObject
+  GameObject* = ptr object of MemoryObject
 
 proc getIndex*(self: GameObject): int32 = 
   read[int32](self, ObjectIndexOffset)

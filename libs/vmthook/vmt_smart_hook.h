@@ -1,10 +1,7 @@
 #pragma once
 
 #include <Windows.h>
-#include <cassert>
-#include <cstddef>
-#include <cstdint>
-#include <cstring>
+#include <mutex>
 
 auto is_code_ptr(void* ptr) -> bool {
 	constexpr const DWORD protect_flags{ PAGE_EXECUTE | PAGE_EXECUTE_READ | PAGE_EXECUTE_READWRITE | PAGE_EXECUTE_WRITECOPY };
@@ -40,13 +37,11 @@ protected:
 
 	auto hook_instance(void* inst) const -> void {
 		auto& vtbl{ *reinterpret_cast<void***>(inst) };
-		assert(vtbl == m_old_vmt || vtbl == m_new_vmt);
 		vtbl = m_new_vmt;
 	}
 
 	auto unhook_instance(void* inst) const -> void {
 		auto& vtbl{ *reinterpret_cast<void***>(inst) };
-		assert(vtbl == m_old_vmt || vtbl == m_new_vmt);
 		vtbl = m_old_vmt;
 	}
 
@@ -92,6 +87,8 @@ public:
 
 private:
 	void* m_class{ nullptr };
-};
+};	
 
-static inline auto create_smart_hook(void* class_base) -> vmt_smart_hook { return vmt_smart_hook(class_base); }
+static inline auto create_smart_hook(void* class_base) -> std::unique_ptr<vmt_smart_hook> { 
+	return std::make_unique<vmt_smart_hook>(class_base); 
+}

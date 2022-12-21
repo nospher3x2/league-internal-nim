@@ -1,48 +1,136 @@
 import ./objects/GameObject
+import ./manager/HudZoomManager
+import ./manager/ChatHudManager
 import ./patchables/Offsets
+import strutils
+import winim
 
-type ChatFunction = proc (ChatInstance: ByteAddress, text: cstring, format: int): int {.gcsafe, thiscall.}
+type FloatingTextType* = enum
+  Invulnerable
+  Special
+  Heal
+  ManaHeal
+  ManaDamage
+  Dodge
+  PhysicalDamageCritical
+  MagicalDamageCritical
+  TrueDamageCritical
+  Experience
+  Gold
+  Level
+  Disable
+  QuestReceived
+  QuestComplete
+  Score
+  PhysicalDamage
+  MagicalDamage
+  TrueDamage
+  EnemyPhysicalDamage
+  EnemyMagicalDamage
+  EnemyTrueDamage
+  EnemyPhysicalDamageCritical
+  EnemyMagicalDamageCritical
+  EnemyTrueDamageCritical
+  Countdown
+  OMW
+  Absorbed
+  Debug
+  PracticeToolTotal
+  PracticeToolLastHit
+  PracticeToolDPS
+  ScoreDarkStar
+  ScoreProject0
+  ScoreProject1
+  ShieldBonusDamage
+
+type
+  cstringConstImpl {.importc:"const char*".} = cstring
+  constChar* = distinct cstringConstImpl
+
+type FloatingTextGetType = proc(floatingTextTypeInstance: ByteAddress, textType: FloatingTextType): cint {.gcsafe, thiscall.}
+type FloatingTextAddInternalLine = proc(
+  floatingTextInstance: ByteAddress, 
+  target: ByteAddress, 
+  textType: cint, 
+  text: constChar,
+  idk1: cfloat,
+  idk2: cint,
+  animationType: cint,
+  instance2: DWORD
+): void {.gcsafe, thiscall.}
 
 type
   Game* = ref object
     address*: ByteAddress
-    version: cstring
+    patch: cstring
 
     localPlayer: GameObject
+    chatManager: ChatHudManager
+    zoomManager: HudZoomManager
+
+    floatingTextEnumInstance: ByteAddress
+    floatingTextManagerInstance: ByteAddress
 
     hudInstance: ByteAddress
-    chatInstance: ByteAddress
     zoomInstance: ByteAddress
 
-    sendChatFunction: ChatFunction
-    printChatFunction: ChatFunction
+    getFloatingTextType: FloatingTextGetType
+    showFloatingTextFunction: FloatingTextAddInternalLine
 
 proc init*(self: Game, baseAddress: ByteAddress): void =
   self.address = baseAddress
 
-  self.version = cast[cstring](self.address + Offsets.GameVersionOffset)
+  self.patch = cast[cstring](self.address + Offsets.GameVersionOffset)
   self.localPlayer = cast[GameObject](self.address + Offsets.LocalPlayerInstanceOffset)
 
   self.hudInstance = cast[ByteAddress](self.address + Offsets.HudInstanceOffset)
-  self.chatInstance = cast[ByteAddress](self.address + Offsets.ChatInstanceOffset)
-  self.zoomInstance = cast[ByteAddress](self.address + Offsets.ZoomInstanceOffset)
+  
+  self.floatingTextEnumInstance = cast[ptr ByteAddress](self.address + 0x24FB358)[]
+  self.floatingTextManagerInstance = cast[ptr ByteAddress](self.address + 0x24FB354)[]
 
-  self.sendChatFunction = cast[ChatFunction](self.address + Offsets.SendChatFunction)
-  self.printChatFunction = cast[ChatFunction](self.address + Offsets.PrintChatFunction)
+  self.getFloatingTextType = cast[FloatingTextGetType](self.address + 0x5FBDD0)
+  self.showFloatingTextFunction = cast[FloatingTextAddInternalLine](self.address + 0x5F1E50)
 
-proc getVersion*(self: Game): cstring =
-  self.version
+  self.chatManager = ChatHudManager()
+  self.zoomManager = HudZoomManager()
 
-proc getTime*(self: Game): cfloat =
-  cast[cfloat](self.address + 0x3143C44)
+  self.chatManager.init(self.address)
+  self.zoomManager.init(self.address)
+
+proc getPatchVersion*(self: Game): cstring =
+  self.patch
 
 proc getLocalPlayer*(self: Game): GameObject =
   self.localPlayer
 
-proc sendChat*(self: Game, message: string): int =
-  self.sendChatFunction(self.chatInstance, message, 1)
+proc getChatHudManager*(self: Game): ChatHudManager =
+  self.chatManager
 
-proc printChat*(self: Game, message: string, format: int): int =
-  self.printChatFunction(self.chatInstance, message, 1)
+proc chatIsOpen*(self: Game): bool =
+  self.chatManager.isOpen()
+
+proc sendMessageChat*(self: Game, message: string): void =
+  discard self.chatManager.sendMessage(message)
+
+proc printMessageChat*(self: Game, message: string, format: int = 0): void =
+  discard self.chatManager.printMessage(message, format)
+
+proc getHudZoomManager*(self: Game): HudZoomManager =
+  self.zoomManager
+
+proc showFloatingText*(self: Game, text: cstring, textType: FloatingTextType, animationType: cint = 0): void = 
+  let textTypePointer = self.getFloatingTextType(self.floatingTextEnumInstance, textType)
+   
+  self.showFloatingTextFunction(
+      self.floatingTextManagerInstance, 
+      cast[ptr ByteAddress](self.localPlayer)[],
+      textTypePointer,
+      constChar(text),
+      0.0,
+      0, 
+      animationType,
+      0
+  )
+  discard
 
 var instance*: Game

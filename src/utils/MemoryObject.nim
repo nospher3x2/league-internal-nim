@@ -1,5 +1,5 @@
 type 
-  MemoryObject* = ref object of RootObj
+  MemoryObject* = ptr object of RootObj
     initialized: int32
     address: ByteAddress
     

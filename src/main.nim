@@ -1,23 +1,28 @@
 {.passL: "-s -static-libgcc".}
 import winim/com
-import std/strformat
+import strutils
+import std/os
 import ./game/objects/GameObject
 import ./game/Game
+import ./game/manager/HudZoomManager
 
 proc mainThread(hModule: HINSTANCE) =
 
-  AllocConsole()
-  discard stdout.reopen("CONOUT$", fmWrite)
+  # AllocConsole()
+  # discard stdout.reopen("CONOUT$", fmWrite)
 
-  echo "oiii"
+  # echo "oiii"
 
   let addressBase = GetModuleHandleA(nil)
   Game.instance = Game()
   Game.instance.init(addressBase)
   
   let game = Game.instance
-  let localPlayer = game.getLocalPlayer()
-  echo localPlayer.getRecallState()
+  let zoomManager = game.getHudZoomManager()
+  zoomManager.patchCheatDetection()
+  zoomManager.changeMaxValue(2250.0)  
+  game.showFloatingText("CarryNim loaded", FloatingTextType.ScoreDarkStar, 0)
+
 proc NimMain() {.cdecl, importc.}
 
 proc DllMain(hModule: HINSTANCE, reasonForCall: DWORD,
